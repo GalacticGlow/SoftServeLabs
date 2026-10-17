@@ -4,7 +4,7 @@ resources:
       name: Lab5 EventHub Producer
 
       continuous:
-        pause_status: UNPAUSED
+        pause_status: PAUSED
         task_retry_mode: NEVER
 
       max_concurrent_runs: 1
