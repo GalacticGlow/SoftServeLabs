@@ -24,9 +24,9 @@ targets:
   prod:
     mode: production
     workspace:
-      host: https://adb-7405619332572019.19.azuredatabricks.net
+      host: https://adb-7405604651938730.10.azuredatabricks.net/
       root_path: /Users/art.gulidov@softserve.academy/.bundle/${bundle.name}/${bundle.target}
     run_as:
       user_name: art.gulidov@softserve.academy
     variables:
-      catalog: dbr_dev_ua_5816_trail
+      catalog: dbr_dev_ua5816bd

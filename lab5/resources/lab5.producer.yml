@@ -1,0 +1,20 @@
+resources:
+  jobs:
+    lab5_producer:
+      name: Lab5 EventHub Producer
+
+      continuous:
+        pause_status: UNPAUSED
+        task_retry_mode: NEVER
+
+      max_concurrent_runs: 1
+
+      tasks:
+        - task_key: produce_events
+          notebook_task:
+            notebook_path: ../src/Producer.ipynb
+            base_parameters:
+              source_url: "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_hour.geojson"
+              secret_scope: "artem-gulidov-scope"
+              producer_connstr: "artem-gulidov-eventhub-connstr"
+              eventhub_name: "artem-gulidov-eventhub-name"

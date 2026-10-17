@@ -31,6 +31,10 @@ BRONZE_TABLE = f"{spark.conf.get("lab5.catalog")}.{spark.conf.get("lab5.bronze_s
 SILVER_TABLE = f"{spark.conf.get("lab5.catalog")}.{spark.conf.get("lab5.silver_schema")}.{spark.conf.get("lab5.batch_silver_to_scd_table_name")}"
 
 def silver_cleaning(df):
+    print(type(COLUMNS_TO_KEEP))
+    print(COLUMNS_TO_KEEP[:10])
+    print(df.columns[:20])
+    print("Has code:", "code" in df.columns)
     df = df.select(*COLUMNS_TO_KEEP)
 
     #cleaning code

@@ -1,0 +1,19 @@
+resources:
+  jobs:
+    lab5_staging:
+      name: Lab5 Staging
+
+      tasks:
+        - task_key: staging
+          notebook_task:
+            notebook_path: ../src/Staging.ipynb
+            source: WORKSPACE
+            base_parameters:
+              url: "https://static.openfoodfacts.org/data/en.openfoodfacts.org.products.csv.gz"
+              volume_path: "/Volumes/${var.catalog}/gulidov_artem_staging/raw_csv"
+
+        - task_key: pipeline
+          depends_on:
+            - task_key: staging
+          pipeline_task:
+            pipeline_id: ${resources.pipelines.lab5.id}

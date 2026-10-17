@@ -3,7 +3,11 @@ from pyspark.sql import functions as F
 
 VOLUME_PATH = spark.conf.get("lab5.batch.staging_volume")
 
-BRONZE_TABLE = f"{spark.conf.get("lab5.catalog")}.{spark.conf.get("lab5.bronze_schema")}.{spark.conf.get("lab5.batch_bronze_table_name")}"
+CATALOG = spark.conf.get("lab5.catalog")
+BRONZE_SCHEMA = spark.conf.get("lab5.bronze_schema")
+BRONZE_TABLE_NAME = spark.conf.get("lab5.batch_bronze_table_name")
+
+BRONZE_TABLE = f"{CATALOG}.{BRONZE_SCHEMA}.{BRONZE_TABLE_NAME}"
 
 FILE_PATTERN = r"products_raw_(\d{8})T(\d{6})Z\.csv\.gz"
 
@@ -22,6 +26,7 @@ def products_bronze():
         .format("cloudFiles")
         .option("cloudFiles.format", "csv")
         .option("header", "true")
+        .option("pathGlobFilter", "products_raw_*.csv.gz")
         .option("delimiter", "\t")
         .option("multiLine", "true")
         .option("escape", '"')
