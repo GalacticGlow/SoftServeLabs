@@ -24,7 +24,7 @@ resources:
         lab5.batch_silver_to_scd_table_name: products_to_scd
         lab5.batch_silver_table_name: products
         lab5.batch.source_url: https://static.openfoodfacts.org/data/en.openfoodfacts.org.products.csv.gz
-        lab5.batch.staging_volume: /Volumes/lab5/gulidov_artem_staging/raw_csv
+        lab5.batch.staging_volume: /Volumes/${var.catalog}/gulidov_artem_staging/raw_csv
         lab5.batch.business_key: product_id
 
         #streaming
