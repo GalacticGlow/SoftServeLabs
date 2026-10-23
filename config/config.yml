@@ -1,0 +1,314 @@
+PIPELINE:
+  NAME: openfoodfacts
+
+CATALOG: dbr_dev_ua5816bd
+
+SCHEMAS:
+  BRONZE: gulidov_artem_bronze
+  SILVER: gulidov_artem_silver
+  GOLD: gulidov_artem_gold
+
+SOURCE:
+  URL: https://static.openfoodfacts.org/data/en.openfoodfacts.org.products.csv.gz
+  VOLUME_PATH: /Volumes/dbr_dev_ua5816bd/gulidov_artem_staging/raw_csv/products_raw.csv.gz
+
+TABLES:
+  BRONZE: products_bronze
+
+  SILVER: products_silver
+
+  GOLD:
+    DIM_PRODUCTS: dim_products
+    DIM_BRANDS: dim_brands
+    FACT_PRODUCT_ENTRIES: fact_product_entries
+
+SILVER:
+  BUSINESS_KEY: product_id
+
+  COLUMNS_TO_KEEP:
+    - code
+    - url
+    - creator
+    - created_datetime
+    - last_modified_datetime
+    - last_updated_datetime
+    - product_name
+    - packaging
+    - packaging_text
+    - brands
+    - manufacturing_places
+    - purchase_places
+    - countries
+    - ingredients_text
+    - allergens
+    - serving_quantity
+    - nova_group
+    - pnns_groups_2
+    - environmental_score_score
+    - environmental_score_grade
+    - product_quantity
+    - owner
+    - unique_scans_n
+    - completeness
+    - last_image_datetime
+    - image_url
+    - image_ingredients_url
+    - image_nutrition_url
+    - energy-kj_100g
+    - energy-kcal_100g
+    - fat_100g
+    - saturated-fat_100g
+    - cholesterol_100g
+    - carbohydrates_100g
+    - sugars_100g
+    - lactose_100g
+    - starch_100g
+    - fiber_100g
+    - proteins_100g
+    - salt_100g
+    - sodium_100g
+    - alcohol_100g
+    - vitamin-a_100g
+    - vitamin-d_100g
+    - vitamin-e_100g
+    - vitamin-k_100g
+    - vitamin-c_100g
+    - vitamin-b1_100g
+    - vitamin-b2_100g
+    - vitamin-b6_100g
+    - vitamin-b9_100g
+    - vitamin-b12_100g
+    - potassium_100g
+    - calcium_100g
+    - phosphorus_100g
+    - iron_100g
+    - magnesium_100g
+    - zinc_100g
+    - copper_100g
+    - iodine_100g
+    - caffeine_100g
+    - carbon-footprint_100g
+
+  RENAME_MAP:
+    code: product_id
+    url: product_page_url
+    creator: entry_creator
+    created_datetime: product_creation_datetime
+    last_modified_datetime: last_user_modification_datetime
+    last_updated_datetime: last_system_update_datetime
+    packaging: packaging_type
+    packaging_text: packaging_details
+    brands: brands_list
+    manufacturing_places: manufacturing_locations
+    purchase_places: purchasing_locations
+    ingredients_text: ingridients_description
+    product_quantity: product_weight
+    owner: brand_owner
+    unique_scans_n: unique_scan_count
+    completeness: product_data_completeness
+    last_image_datetime: last_product_image_datetime
+    image_url: product_image_url
+    image_nutrition_url: image_nutrition_data_url
+    energy-kj_100g: energy_kj_100g
+    energy-kcal_100g: energy_kcal_100g
+    saturated-fat_100g: saturated_fat_100g
+    vitamin-a_100g: vitamin_a_100g
+    vitamin-d_100g: vitamin_d_100g
+    vitamin-e_100g: vitamin_e_100g
+    vitamin-k_100g: vitamin_k_100g
+    vitamin-c_100g: vitamin_c_100g
+    vitamin-b1_100g: vitamin_b1_100g
+    vitamin-b2_100g: vitamin_b2_100g
+    vitamin-b6_100g: vitamin_b6_100g
+    vitamin-b9_100g: vitamin_b9_100g
+    vitamin-b12_100g: vitamin_b12_100g
+    carbon-footprint_100g: carbon_footprint_100g
+
+  PNN_CATEGORIES:
+    - Dairy desserts
+    - One-dish meals
+    - Sandwiches
+    - Biscuits and cakes
+    - Unsweetened beverages
+    - Nuts
+    - Artificially sweetened beverages
+    - Fats
+    - Sweets
+    - Salty and fatty products
+    - Vegetables
+    - Eggs
+    - Sweetened beverages
+    - Dried fruits
+    - Offals
+    - Cereals
+    - Fruit juices
+    - Bread
+    - Waters and flavored waters
+    - Baby foods
+    - Cheese
+    - Dressings and sauces
+    - Ice cream
+    - Appetizers
+    - Meat
+    - Breakfast cereals
+    - Teas and herbal teas and coffees
+    - Fish and seafood
+    - Legumes
+    - Pizza pies and quiches
+    - Fruit nectars
+    - Pastries
+    - Plant-based milk substitutes
+    - Fruits
+    - Chocolate products
+    - Alcoholic beverages
+    - Baby milks
+    - Processed meat
+    - Milk and yogurt
+    - Potatoes
+    - Soups
+
+  MICROELEMENT_COLS:
+    - energy-kj_100g
+    - energy-kcal_100g
+    - fat_100g
+    - saturated-fat_100g
+    - cholesterol_100g
+    - carbohydrates_100g
+    - sugars_100g
+    - lactose_100g
+    - starch_100g
+    - fiber_100g
+    - proteins_100g
+    - salt_100g
+    - sodium_100g
+    - alcohol_100g
+    - vitamin-a_100g
+    - vitamin-d_100g
+    - vitamin-e_100g
+    - vitamin-k_100g
+    - vitamin-c_100g
+    - vitamin-b1_100g
+    - vitamin-b2_100g
+    - vitamin-b6_100g
+    - vitamin-b9_100g
+    - vitamin-b12_100g
+    - potassium_100g
+    - calcium_100g
+    - phosphorus_100g
+    - iron_100g
+    - magnesium_100g
+    - zinc_100g
+    - copper_100g
+    - iodine_100g
+    - caffeine_100g
+    - carbon-footprint_100g
+
+  COUNTRY_MAP:
+    "us": United States
+    "usa": United States
+    "gb": United Kingdom
+    "uk": United Kingdom
+    "fr": France
+    "de": Germany
+    "ge": Germany
+    "it": Italy
+    "es": Spain
+    "esp": Spain
+    "pt": Portugal
+    "nl": Netherlands
+    "be": Belgium
+    "ch": Switzerland
+    "at": Austria
+    "se": Sweden
+    "no": Norway
+    "dk": Denmark
+    "fi": Finland
+    "pl": Poland
+    "cz": Czech Republic
+    "sk": Slovakia
+    "hu": Hungary
+    "ro": Romania
+    "bg": Bulgaria
+    "ua": Ukraine
+    "ca": Canada
+    "mx": Mexico
+    "br": Brazil
+    "ar": Argentina
+    "au": Australia
+    "nz": New Zealand
+    "jp": Japan
+    "cn": China
+    "in": India
+
+GOLD:
+  FACT_PRODUCT_ENTRIES_COLS:
+    - entry_id
+    - product_id
+    - brand_id
+    - entry_creator
+    - product_data_completeness
+    - product_creation_datetime
+    - last_user_modification_datetime
+    - last_system_update_datetime
+    - last_product_image_datetime
+
+  DIM_BRANDS_COLS:
+    - brand_id
+    - brands_list
+    - brand_owner
+
+  DIM_PRODUCTS_COLS:
+    - product_id
+    - product_page_url
+    - product_name
+    - packaging_type
+    - packaging_details
+    - manufacturing_locations
+    - purchasing_locations
+    - countries
+    - ingridients_description
+    - allergens
+    - serving_quantity
+    - nova_group
+    - pnns_groups_2
+    - environmental_score_score
+    - environmental_score_grade
+    - product_weight
+    - unique_scan_count
+    - product_image_url
+    - image_ingredients_url
+    - image_nutrition_data_url
+    - energy_kj_100g
+    - energy_kcal_100g
+    - fat_100g
+    - saturated_fat_100g
+    - cholesterol_100g
+    - carbohydrates_100g
+    - sugars_100g
+    - lactose_100g
+    - starch_100g
+    - fiber_100g
+    - proteins_100g
+    - salt_100g
+    - sodium_100g
+    - alcohol_100g
+    - vitamin_a_100g
+    - vitamin_d_100g
+    - vitamin_e_100g
+    - vitamin_k_100g
+    - vitamin_c_100g
+    - vitamin_b1_100g
+    - vitamin_b2_100g
+    - vitamin_b6_100g
+    - vitamin_b9_100g
+    - vitamin_b12_100g
+    - potassium_100g
+    - calcium_100g
+    - phosphorus_100g
+    - iron_100g
+    - magnesium_100g
+    - zinc_100g
+    - copper_100g
+    - iodine_100g
+    - caffeine_100g
+    - carbon_footprint_100g
