@@ -1,0 +1,3 @@
+dq_tests
+gold
+silver

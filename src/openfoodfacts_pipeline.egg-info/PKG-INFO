@@ -1,0 +1,8 @@
+Metadata-Version: 2.4
+Name: openfoodfacts-pipeline
+Version: 0.1.0
+Requires-Python: <3.13,>=3.12
+Requires-Dist: pyspark==4.0.0
+Provides-Extra: test
+Requires-Dist: pytest; extra == "test"
+Requires-Dist: pytest-cov; extra == "test"

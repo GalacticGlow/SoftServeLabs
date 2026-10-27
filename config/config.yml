@@ -17,6 +17,13 @@ TABLES:
 
   SILVER: products_silver
 
+  QUARANTINE:
+    RECONCILIATION: reconciliation_quarantine
+    SILVER: products_silver_quarantine
+    GOLD_DIM_PRODUCTS: dim_products_quarantine
+    GOLD_DIM_BRANDS: dim_brands_quarantine
+    GOLD_FACT_PRODUCT_ENTRIES: fact_product_entries_quarantine
+
   GOLD:
     DIM_PRODUCTS: dim_products
     DIM_BRANDS: dim_brands

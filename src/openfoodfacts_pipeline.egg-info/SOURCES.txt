@@ -1,0 +1,11 @@
+pyproject.toml
+src/dq_tests.py
+src/gold.py
+src/silver.py
+src/openfoodfacts_pipeline.egg-info/PKG-INFO
+src/openfoodfacts_pipeline.egg-info/SOURCES.txt
+src/openfoodfacts_pipeline.egg-info/dependency_links.txt
+src/openfoodfacts_pipeline.egg-info/requires.txt
+src/openfoodfacts_pipeline.egg-info/top_level.txt
+tests/test_gold.py
+tests/test_silver.py
