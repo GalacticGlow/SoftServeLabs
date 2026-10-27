@@ -1,17 +1,11 @@
 from pyspark.sql.types import StringType, StructField, StructType
 from pathlib import Path
 import sys
-import yaml
 
 SRC_PATH = str(Path.cwd().parent / "src")
 sys.path.insert(0, SRC_PATH)
 
 from silver import build_scd2_column_list, prepare_silver_dataframe
-
-CONFIG_PATH = "/Workspace/Users/art.gulidov@softserve.academy/Lab6/config/config.yml"
-
-with open(CONFIG_PATH, "r") as f:
-    config = yaml.safe_load(f)
 
 def test_build_scd2_column_list_applies_renames(spark):
     columns = ["code", "owner", "product_quantity", "product_name"]
@@ -31,10 +25,122 @@ def test_build_scd2_column_list_applies_renames(spark):
     ]
 
 def test_prepare_silver_dataframe_deduplicates_and_cleans_values(spark):
-    COLUMNS_TO_KEEP = config["SILVER"]["COLUMNS_TO_KEEP"]
-    RENAME_MAP = config["SILVER"]["RENAME_MAP"]
-    PNN_CATEGORIES = config["SILVER"]["PNN_CATEGORIES"]
-    MICROELEMENT_COLS = config["SILVER"]["MICROELEMENT_COLS"]
+    COLUMNS_TO_KEEP = [
+        "code", "url", "creator", "created_datetime", "last_modified_datetime",
+        "last_updated_datetime", "product_name", "packaging", "packaging_text",
+        "brands", "manufacturing_places", "purchase_places", "countries",
+        "ingredients_text", "allergens", "serving_quantity", "nova_group",
+        "pnns_groups_2",
+        "environmental_score_score", "environmental_score_grade",
+        "product_quantity", "owner", "unique_scans_n", "completeness",
+        "last_image_datetime", "image_url",
+        "image_ingredients_url", "image_nutrition_url",
+        "energy-kj_100g", "energy-kcal_100g",
+        "fat_100g", "saturated-fat_100g", "cholesterol_100g",
+        "carbohydrates_100g", "sugars_100g", "lactose_100g", "starch_100g",
+        "fiber_100g", "proteins_100g", "salt_100g", "sodium_100g",
+        "alcohol_100g", "vitamin-a_100g", "vitamin-d_100g", "vitamin-e_100g",
+        "vitamin-k_100g", "vitamin-c_100g", "vitamin-b1_100g",
+        "vitamin-b2_100g", "vitamin-b6_100g", "vitamin-b9_100g",
+        "vitamin-b12_100g", "potassium_100g", "calcium_100g",
+        "phosphorus_100g", "iron_100g", "magnesium_100g", "zinc_100g",
+        "copper_100g", "iodine_100g", "caffeine_100g",
+        "carbon-footprint_100g"
+    ]
+
+    RENAME_MAP = {
+        "code": "product_id",
+        "url": "product_page_url",
+        "creator": "entry_creator",
+        "created_datetime": "product_creation_datetime",
+        "last_modified_datetime": "last_user_modification_datetime",
+        "last_updated_datetime": "last_system_update_datetime",
+        "packaging": "packaging_type",
+        "packaging_text": "packaging_details",
+        "brands": "brands_list",
+        "manufacturing_places": "manufacturing_locations",
+        "purchase_places": "purchasing_locations",
+        "ingredients_text": "ingridients_description",
+        "product_quantity": "product_weight",
+        "owner": "brand_owner",
+        "unique_scans_n": "unique_scan_count",
+        "completeness": "product_data_completeness",
+        "last_image_datetime": "last_product_image_datetime",
+        "image_url": "product_image_url",
+        "image_nutrition_url": "image_nutrition_data_url",
+        "energy-kj_100g": "energy_kj_100g",
+        "energy-kcal_100g": "energy_kcal_100g",
+        "saturated-fat_100g": "saturated_fat_100g",
+        "vitamin-a_100g": "vitamin_a_100g",
+        "vitamin-d_100g": "vitamin_d_100g",
+        "vitamin-e_100g": "vitamin_e_100g",
+        "vitamin-k_100g": "vitamin_k_100g",
+        "vitamin-c_100g": "vitamin_c_100g",
+        "vitamin-b1_100g": "vitamin_b1_100g",
+        "vitamin-b2_100g": "vitamin_b2_100g",
+        "vitamin-b6_100g": "vitamin_b6_100g",
+        "vitamin-b9_100g": "vitamin_b9_100g",
+        "vitamin-b12_100g": "vitamin_b12_100g",
+        "carbon-footprint_100g": "carbon_footprint_100g"
+    }
+
+    PNN_CATEGORIES = [
+        "Dairy desserts",
+        "One-dish meals",
+        "Sandwiches",
+        "Biscuits and cakes",
+        "Unsweetened beverages",
+        "Nuts",
+        "Artificially sweetened beverages",
+        "Fats",
+        "Sweets",
+        "Salty and fatty products",
+        "Vegetables",
+        "Eggs",
+        "Sweetened beverages",
+        "Dried fruits",
+        "Offals",
+        "Cereals",
+        "Fruit juices",
+        "Bread",
+        "Waters and flavored waters",
+        "Baby foods",
+        "Cheese",
+        "Dressings and sauces",
+        "Ice cream",
+        "Appetizers",
+        "Meat",
+        "Breakfast cereals",
+        "Teas and herbal teas and coffees",
+        "Fish and seafood",
+        "Legumes",
+        "Pizza pies and quiches",
+        "Fruit nectars",
+        "Pastries",
+        "Plant-based milk substitutes",
+        "Fruits",
+        "Chocolate products",
+        "Alcoholic beverages",
+        "Baby milks",
+        "Processed meat",
+        "Milk and yogurt",
+        "Potatoes",
+        "Soups"
+    ]
+
+    MICROELEMENT_COLS = [
+        "energy-kj_100g", "energy-kcal_100g",
+        "fat_100g", "saturated-fat_100g", "cholesterol_100g",
+        "carbohydrates_100g", "sugars_100g", "lactose_100g", "starch_100g",
+        "fiber_100g", "proteins_100g", "salt_100g", "sodium_100g",
+        "alcohol_100g", "vitamin-a_100g", "vitamin-d_100g", "vitamin-e_100g",
+        "vitamin-k_100g", "vitamin-c_100g", "vitamin-b1_100g",
+        "vitamin-b2_100g", "vitamin-b6_100g", "vitamin-b9_100g",
+        "vitamin-b12_100g", "potassium_100g", "calcium_100g",
+        "phosphorus_100g", "iron_100g", "magnesium_100g", "zinc_100g",
+        "copper_100g", "iodine_100g", "caffeine_100g",
+        "carbon-footprint_100g"
+    ]
 
     base = {column: "N/A" for column in COLUMNS_TO_KEEP}
     base.update({
