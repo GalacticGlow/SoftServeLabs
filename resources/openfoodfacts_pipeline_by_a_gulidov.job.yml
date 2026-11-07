@@ -7,6 +7,9 @@ resources:
         - name: catalog
           default: ${var.catalog}
 
+        - name: staging_schema
+          default: ${var.staging_schema}
+
         - name: staging_volume
           default: ${var.staging_volume}
 

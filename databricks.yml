@@ -30,10 +30,11 @@ targets:
 
     variables:
       catalog: dbr_dev_ua5816bd
+      staging_schema: gulidov_artem_staging
+      staging_volume: raw_csv
       bronze_schema: gulidov_artem_bronze
       silver_schema: gulidov_artem_silver
       gold_schema: gulidov_artem_gold
-      staging_volume: /Volumes/dbr_dev_ua5816bd/gulidov_artem_staging/raw_csv/products_raw.csv.gz
 
   prod:
     mode: production
@@ -44,8 +45,8 @@ targets:
 
     variables:
       catalog: dbr_dev_ua5816bd
+      staging_schema: prod_gulidov_artem_staging
+      staging_volume: raw_csv
       bronze_schema: prod_gulidov_artem_bronze
       silver_schema: prod_gulidov_artem_silver
       gold_schema: prod_gulidov_artem_gold
-      staging_volume: /Volumes/dbr_dev_ua5816bd/prod_gulidov_artem_staging/raw_csv/products_raw.csv.gz
-      
