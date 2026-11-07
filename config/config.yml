@@ -1,16 +1,14 @@
 PIPELINE:
   NAME: openfoodfacts
 
-CATALOG: dbr_dev_ua5816bd
-
-SCHEMAS:
-  BRONZE: gulidov_artem_bronze
-  SILVER: gulidov_artem_silver
-  GOLD: gulidov_artem_gold
-
 SOURCE:
   URL: https://static.openfoodfacts.org/data/en.openfoodfacts.org.products.csv.gz
   VOLUME_PATH: /Volumes/dbr_dev_ua5816bd/gulidov_artem_staging/raw_csv/products_raw.csv.gz
+
+PERMISSIONS:
+  PRINCIPAL: "account users"
+  GOLD_READ_ACCESS: true
+  SECURITY_GROUP: "account users"
 
 TABLES:
   BRONZE: products_bronze

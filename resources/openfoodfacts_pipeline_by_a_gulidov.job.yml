@@ -1,0 +1,99 @@
+resources:
+  jobs:
+    openfoodfacts_pipeline_by_a_gulidov:
+      name: Prod OpenFoodFacts Pipeline
+
+      parameters:
+        - name: catalog
+          default: ${var.catalog}
+
+        - name: staging_volume
+          default: ${var.staging_volume}
+
+        - name: bronze_schema
+          default: ${var.bronze_schema}
+
+        - name: silver_schema
+          default: ${var.silver_schema}
+
+        - name: gold_schema
+          default: ${var.gold_schema}
+
+      tasks:
+        - task_key: Setup
+          existing_cluster_id: 0924-102324-wnx9xwo2
+          disabled: false
+          email_notifications: {}
+          notebook_task:
+            notebook_path: ../setup/setup.ipynb
+            source: WORKSPACE
+          run_if: ALL_SUCCESS
+          timeout_seconds: 0
+          webhook_notifications: {}
+        - task_key: Staging
+          depends_on:
+            - task_key: Setup
+          existing_cluster_id: 0924-102324-wnx9xwo2
+          disabled: false
+          email_notifications: {}
+          notebook_task:
+            notebook_path: ../src/Staging.ipynb
+            source: WORKSPACE
+          run_if: ALL_SUCCESS
+          timeout_seconds: 0
+          webhook_notifications: {}
+        - task_key: Bronze
+          depends_on:
+            - task_key: Staging
+          existing_cluster_id: 0924-102324-wnx9xwo2
+          disabled: false
+          email_notifications: {}
+          notebook_task:
+            notebook_path: ../src/Bronze.ipynb
+            source: WORKSPACE
+          run_if: ALL_SUCCESS
+          timeout_seconds: 0
+          webhook_notifications: {}
+        - task_key: Silver
+          depends_on:
+            - task_key: Bronze
+          existing_cluster_id: 0924-102324-wnx9xwo2
+          disabled: false
+          email_notifications: {}
+          notebook_task:
+            notebook_path: ../src/Silver.ipynb
+            source: WORKSPACE
+          run_if: ALL_SUCCESS
+          timeout_seconds: 0
+          webhook_notifications: {}
+        - task_key: Gold
+          depends_on:
+            - task_key: Silver
+          existing_cluster_id: 0924-102324-wnx9xwo2
+          disabled: false
+          email_notifications: {}
+          notebook_task:
+            notebook_path: ../src/Gold.ipynb
+            source: WORKSPACE
+          run_if: ALL_SUCCESS
+          timeout_seconds: 0
+          webhook_notifications: {}
+      email_notifications:
+        no_alert_for_skipped_runs: true
+        on_failure:
+          - art.gulidov@gmail.com
+        on_success:
+          - art.gulidov@gmail.com
+      max_concurrent_runs: 1
+      notification_settings:
+        no_alert_for_canceled_runs: true
+        no_alert_for_skipped_runs: true
+      performance_target: PERFORMANCE_OPTIMIZED
+      queue:
+        enabled: true
+      schedule:
+        pause_status: PAUSED
+        quartz_cron_expression: 32 0 12 * * ?
+        timezone_id: Europe/Kiev
+      timeout_seconds: 0
+      webhook_notifications: {}

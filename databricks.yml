@@ -1,0 +1,50 @@
+bundle:
+  name: openfoodfacts_pipeline
+
+include:
+  - resources/*.yml
+
+variables:
+  catalog:
+    description: Unity Catalog catalog for this environment
+
+  bronze_schema:
+    description: Bronze schema
+
+  silver_schema:
+    description: Silver schema
+
+  gold_schema:
+    description: Gold schema
+
+  staging_volume:
+    description: Volume containing raw source snapshots
+
+targets:
+  dev:
+    mode: development
+    default: true
+
+    workspace:
+      host: https://adb-7405604651938730.10.azuredatabricks.net/
+
+    variables:
+      catalog: dbr_dev_ua5816bd
+      bronze_schema: gulidov_artem_bronze
+      silver_schema: gulidov_artem_silver
+      gold_schema: gulidov_artem_gold
+      staging_volume: /Volumes/dbr_dev_ua5816bd/gulidov_artem_staging/raw_csv/products_raw.csv.gz
+
+  prod:
+    mode: production
+
+    workspace:
+      host: https://adb-7405604651938730.10.azuredatabricks.net/
+      root_path: /Workspace/Users/art.gulidov@softserve.academy/.bundle/${bundle.name}/${bundle.target}
+
+    variables:
+      catalog: dbr_dev_ua5816bd
+      bronze_schema: prod_gulidov_artem_bronze
+      silver_schema: prod_gulidov_artem_silver
+      gold_schema: prod_gulidov_artem_gold
+      staging_volume: /Volumes/dbr_dev_ua5816bd/prod_gulidov_artem_staging/raw_csv/products_raw.csv.gz
