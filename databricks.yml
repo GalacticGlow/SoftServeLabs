@@ -48,3 +48,4 @@ targets:
       silver_schema: prod_gulidov_artem_silver
       gold_schema: prod_gulidov_artem_gold
       staging_volume: /Volumes/dbr_dev_ua5816bd/prod_gulidov_artem_staging/raw_csv/products_raw.csv.gz
+      
