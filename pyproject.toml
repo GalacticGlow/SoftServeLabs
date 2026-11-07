@@ -16,6 +16,7 @@ dependencies = [
 test = [
     "pytest",
     "pytest-cov",
+    "delta-spark",
 ]
 
 [tool.pytest.ini_options]
