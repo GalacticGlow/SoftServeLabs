@@ -2,7 +2,7 @@ name: Unit Tests
 
 on:
   push:
-    branches: [Lab7]
+    branches: [Lab7, Lab8]
     paths:
       - "src/**"
       - "tests/**"
