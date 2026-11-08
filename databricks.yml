@@ -8,6 +8,12 @@ variables:
   catalog:
     description: Unity Catalog catalog for this environment
 
+  staging_schema:
+    description: Staging schema
+
+  staging_volume:
+    description: Volume containing raw source snapshots
+
   bronze_schema:
     description: Bronze schema
 
@@ -17,8 +23,11 @@ variables:
   gold_schema:
     description: Gold schema
 
-  staging_volume:
-    description: Volume containing raw source snapshots
+  reader_group:
+    default: account users
+
+  service_principal_name:
+    default: d1a2118a-1d70-44cf-ba58-ea3454da6727
 
 targets:
   dev:
@@ -38,6 +47,16 @@ targets:
 
   prod:
     mode: production
+
+    run_as:
+      service_principal_name: ${var.service_principal_name}
+    
+    permissions:
+      - user_name: art.gulidov@softserve.academy
+        level: CAN_MANAGE
+
+      - service_principal_name: ${var.service_principal_name}
+        level: CAN_MANAGE
 
     workspace:
       host: https://adb-7405604651938730.10.azuredatabricks.net/

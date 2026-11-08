@@ -1,6 +1,8 @@
 {
   "datasets": [
     {
+      "name": "6ed226a6",
+      "displayName": "fact_product_entries",
       "config": {
         "dimensions": [
           {
@@ -17,11 +19,11 @@
         ],
         "source": "dbr_dev_ua5816bd.gulidov_artem_gold.fact_product_entries",
         "version": "1.1"
-      },
-      "displayName": "fact_product_entries",
-      "name": "6ed226a6"
+      }
     },
     {
+      "name": "7255cbbb",
+      "displayName": "dim_products",
       "config": {
         "dimensions": [
           {
@@ -38,11 +40,11 @@
         ],
         "source": "dbr_dev_ua5816bd.gulidov_artem_gold.dim_products",
         "version": "1.1"
-      },
-      "displayName": "dim_products",
-      "name": "7255cbbb"
+      }
     },
     {
+      "name": "46df1faa",
+      "displayName": "dim_brands",
       "config": {
         "dimensions": [
           {
@@ -59,13 +61,11 @@
         ],
         "source": "dbr_dev_ua5816bd.gulidov_artem_gold.dim_brands",
         "version": "1.1"
-      },
-      "displayName": "dim_brands",
-      "name": "46df1faa"
+      }
     },
     {
-      "displayName": "Product Counts and Brand Insights Summary",
       "name": "c5813028",
+      "displayName": "Product Counts and Brand Insights Summary",
       "queryLines": [
         "SELECT\r\n",
         "    COUNT(DISTINCT f.product_id) AS total_products,\r\n",
@@ -94,8 +94,8 @@
       ]
     },
     {
-      "displayName": "Top Brand Insights with Product Counts and Scan Averages",
       "name": "8d127423",
+      "displayName": "Top Brand Insights with Product Counts and Scan Averages",
       "queryLines": [
         "SELECT\r\n",
         "    b.brands_list,\r\n",
@@ -129,8 +129,8 @@
       ]
     },
     {
-      "displayName": "Product Group Count Analysis",
       "name": "ad631e79",
+      "displayName": "Product Group Count Analysis",
       "queryLines": [
         "SELECT\r\n",
         "    p.nova_group,\r\n",
@@ -149,8 +149,8 @@
       ]
     },
     {
-      "displayName": "Nutrient Averages and Product Counts by Food Groups",
       "name": "6e3ca860",
+      "displayName": "Nutrient Averages and Product Counts by Food Groups",
       "queryLines": [
         "SELECT\r\n",
         "    p.pnns_groups_2,\r\n",
@@ -184,8 +184,8 @@
       ]
     },
     {
-      "displayName": "Environmental Grades and Product Metrics Summary",
       "name": "cbee819e",
+      "displayName": "Environmental Grades and Product Metrics Summary",
       "queryLines": [
         "SELECT\r\n",
         "    p.environmental_score_grade AS environmental_grade,\r\n",
@@ -207,8 +207,8 @@
       ]
     },
     {
-      "displayName": "Carbon Footprint Analysis of Food Products",
       "name": "be2d5d53",
+      "displayName": "Carbon Footprint Analysis of Food Products",
       "queryLines": [
         "SELECT\r\n",
         "    p.pnns_groups_2,\r\n",
@@ -234,15 +234,10 @@
   ],
   "pages": [
     {
+      "name": "f80a9c2a",
       "displayName": "Dashboard",
       "layout": [
         {
-          "position": {
-            "height": 2,
-            "width": 12,
-            "x": 0,
-            "y": 0
-          },
           "widget": {
             "name": "overview",
             "queries": [
@@ -250,25 +245,25 @@
                 "name": "main_query",
                 "query": {
                   "datasetName": "c5813028",
-                  "disaggregated": true,
                   "fields": [
                     {
-                      "expression": "`total_products`",
-                      "name": "total_products"
+                      "name": "total_products",
+                      "expression": "`total_products`"
                     },
                     {
-                      "expression": "`known_brands`",
-                      "name": "known_brands"
+                      "name": "known_brands",
+                      "expression": "`known_brands`"
                     },
                     {
-                      "expression": "`products_with_environmental_grade`",
-                      "name": "products_with_environmental_grade"
+                      "name": "products_with_environmental_grade",
+                      "expression": "`products_with_environmental_grade`"
                     },
                     {
-                      "expression": "`products_with_scans`",
-                      "name": "products_with_scans"
+                      "name": "products_with_scans",
+                      "expression": "`products_with_scans`"
                     }
-                  ]
+                  ],
+                  "disaggregated": true
                 }
               }
             ],
@@ -302,15 +297,15 @@
               "version": 2,
               "widgetType": "table"
             }
+          },
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 12,
+            "height": 2
           }
         },
         {
-          "position": {
-            "height": 6,
-            "width": 6,
-            "x": 0,
-            "y": 2
-          },
           "widget": {
             "name": "top-15-brands-product-count",
             "queries": [
@@ -318,22 +313,22 @@
                 "name": "main_query",
                 "query": {
                   "datasetName": "8d127423",
-                  "disaggregated": false,
                   "fields": [
                     {
-                      "expression": "SUM(`product_count`)",
-                      "name": "sum(product_count)"
+                      "name": "sum(product_count)",
+                      "expression": "SUM(`product_count`)"
                     },
                     {
-                      "expression": "`brands_list`",
-                      "name": "brands_list"
+                      "name": "brands_list",
+                      "expression": "`brands_list`"
                     }
                   ],
                   "filters": [
                     {
                       "expression": "`brand_owner` IN (`brand_owner`) OR TRUE"
                     }
-                  ]
+                  ],
+                  "disaggregated": false
                 }
               }
             ],
@@ -382,15 +377,15 @@
               "version": 3,
               "widgetType": "bar"
             }
+          },
+          "position": {
+            "x": 0,
+            "y": 2,
+            "width": 6,
+            "height": 6
           }
         },
         {
-          "position": {
-            "height": 6,
-            "width": 6,
-            "x": 6,
-            "y": 2
-          },
           "widget": {
             "name": "products-by-nova-group",
             "queries": [
@@ -398,17 +393,17 @@
                 "name": "main_query",
                 "query": {
                   "datasetName": "ad631e79",
-                  "disaggregated": false,
                   "fields": [
                     {
-                      "expression": "`nova_group`",
-                      "name": "nova_group"
+                      "name": "nova_group",
+                      "expression": "`nova_group`"
                     },
                     {
-                      "expression": "SUM(`product_count`)",
-                      "name": "sum(product_count)"
+                      "name": "sum(product_count)",
+                      "expression": "SUM(`product_count`)"
                     }
-                  ]
+                  ],
+                  "disaggregated": false
                 }
               }
             ],
@@ -457,15 +452,15 @@
               "version": 3,
               "widgetType": "bar"
             }
+          },
+          "position": {
+            "x": 6,
+            "y": 2,
+            "width": 6,
+            "height": 6
           }
         },
         {
-          "position": {
-            "height": 9,
-            "width": 12,
-            "x": 0,
-            "y": 8
-          },
           "widget": {
             "name": "nutritional-profile-by-food-category",
             "queries": [
@@ -473,25 +468,25 @@
                 "name": "main_query",
                 "query": {
                   "datasetName": "6e3ca860",
-                  "disaggregated": false,
                   "fields": [
                     {
-                      "expression": "`pnns_groups_2`",
-                      "name": "pnns_groups_2"
+                      "name": "pnns_groups_2",
+                      "expression": "`pnns_groups_2`"
                     },
                     {
-                      "expression": "SUM(`avg_fat_g`)",
-                      "name": "sum(avg_fat_g)"
+                      "name": "sum(avg_fat_g)",
+                      "expression": "SUM(`avg_fat_g`)"
                     },
                     {
-                      "expression": "SUM(`avg_protein_g`)",
-                      "name": "sum(avg_protein_g)"
+                      "name": "sum(avg_protein_g)",
+                      "expression": "SUM(`avg_protein_g`)"
                     },
                     {
-                      "expression": "SUM(`avg_sugar_g`)",
-                      "name": "sum(avg_sugar_g)"
+                      "name": "sum(avg_sugar_g)",
+                      "expression": "SUM(`avg_sugar_g`)"
                     }
-                  ]
+                  ],
+                  "disaggregated": false
                 }
               }
             ],
@@ -553,15 +548,15 @@
               "version": 3,
               "widgetType": "bar"
             }
+          },
+          "position": {
+            "x": 0,
+            "y": 8,
+            "width": 12,
+            "height": 9
           }
         },
         {
-          "position": {
-            "height": 6,
-            "width": 6,
-            "x": 0,
-            "y": 17
-          },
           "widget": {
             "name": "environmental-score-grade-distribution",
             "queries": [
@@ -569,17 +564,17 @@
                 "name": "main_query",
                 "query": {
                   "datasetName": "cbee819e",
-                  "disaggregated": false,
                   "fields": [
                     {
-                      "expression": "`environmental_grade`",
-                      "name": "environmental_grade"
+                      "name": "environmental_grade",
+                      "expression": "`environmental_grade`"
                     },
                     {
-                      "expression": "SUM(`product_count`)",
-                      "name": "sum(product_count)"
+                      "name": "sum(product_count)",
+                      "expression": "SUM(`product_count`)"
                     }
-                  ]
+                  ],
+                  "disaggregated": false
                 }
               }
             ],
@@ -625,15 +620,15 @@
               "version": 3,
               "widgetType": "bar"
             }
+          },
+          "position": {
+            "x": 0,
+            "y": 17,
+            "width": 6,
+            "height": 6
           }
         },
         {
-          "position": {
-            "height": 9,
-            "width": 10,
-            "x": 0,
-            "y": 23
-          },
           "widget": {
             "name": "carbon-footprint-by-food-category",
             "queries": [
@@ -641,17 +636,17 @@
                 "name": "main_query",
                 "query": {
                   "datasetName": "be2d5d53",
-                  "disaggregated": false,
                   "fields": [
                     {
-                      "expression": "SUM(`avg_carbon_footprint`)",
-                      "name": "sum(avg_carbon_footprint)"
+                      "name": "sum(avg_carbon_footprint)",
+                      "expression": "SUM(`avg_carbon_footprint`)"
                     },
                     {
-                      "expression": "`pnns_groups_2`",
-                      "name": "pnns_groups_2"
+                      "name": "pnns_groups_2",
+                      "expression": "`pnns_groups_2`"
                     }
-                  ]
+                  ],
+                  "disaggregated": false
                 }
               }
             ],
@@ -697,18 +692,23 @@
               "version": 3,
               "widgetType": "bar"
             }
+          },
+          "position": {
+            "x": 0,
+            "y": 23,
+            "width": 10,
+            "height": 9
           }
         }
       ],
-      "layoutVersion": "GRID_V1",
-      "name": "f80a9c2a",
-      "pageType": "PAGE_TYPE_CANVAS"
+      "pageType": "PAGE_TYPE_CANVAS",
+      "layoutVersion": "GRID_V1"
     }
   ],
   "uiSettings": {
-    "applyModeEnabled": false,
     "theme": {
       "widgetHeaderAlignment": "ALIGNMENT_UNSPECIFIED"
-    }
+    },
+    "applyModeEnabled": false
   }
 }

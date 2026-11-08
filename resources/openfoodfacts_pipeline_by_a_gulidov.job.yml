@@ -22,6 +22,9 @@ resources:
         - name: gold_schema
           default: ${var.gold_schema}
 
+        - name: service_principal
+          default: ${var.service_principal_name}
+
       tasks:
         - task_key: Setup
           existing_cluster_id: 0924-102324-wnx9xwo2

@@ -307,6 +307,39 @@ def apply_scd_type_2(
     data_columns = build_scd2_column_list(columns_to_keep, rename_map)
     require_columns(source_df, [*data_columns, business_key], "Cleaned Silver source")
 
+    if not spark.catalog.tableExists(target_table_path):
+        initial_silver_df = (
+            source_df
+            .withColumn(
+                "_hash",
+                F.sha2(
+                    F.concat_ws(
+                        "||",
+                        *[
+                            F.coalesce(
+                                quoted_col(column_name).cast("string"),
+                                F.lit("<NULL>")
+                            )
+                            for column_name in data_columns
+                        ],
+                    ),
+                    256,
+                ),
+            )
+            .withColumn("valid_from", F.current_timestamp())
+            .withColumn("valid_to", F.lit(None).cast("timestamp"))
+            .withColumn("is_current", F.lit(True))
+        )
+
+        (
+            initial_silver_df.write
+            .format("delta")
+            .mode("error")
+            .saveAsTable(target_table_path)
+        )
+
+        return
+
     source_df = source_df.withColumn(
         "_hash",
         F.sha2(

@@ -1,6 +1,6 @@
 resources:
   dashboards:
     openfoodfacts_dashboard:
-      display_name: "Lab 6 Gold"
+      display_name: "Lab 8 Dashboard"
       warehouse_id: abb8ea0ecf2e1a89
       file_path: ../src/openfoodfacts_dashboard.lvdash.json
