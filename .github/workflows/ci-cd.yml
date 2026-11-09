@@ -43,6 +43,13 @@ jobs:
   bundle-validation:
     name: Bundle Validation
     runs-on: ubuntu-latest
+    environment: prod
+
+    env:
+      DATABRICKS_AUTH_TYPE: azure-client-secret
+      ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
+      ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
+      ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
 
     steps:
       - name: Check out repository
@@ -61,19 +68,20 @@ jobs:
     if: |
       (github.event_name == 'push' ||
        github.event_name == 'workflow_dispatch') &&
-      github.ref == 'refs/heads/main'
+      github.ref == 'refs/heads/Lab8'
 
     runs-on: ubuntu-latest
     environment: prod
 
-    permissions:
-      contents: read
-      id-token: write
+    concurrency:
+      group: openfoodfacts-prod-deploy
+      cancel-in-progress: false
 
     env:
-      DATABRICKS_AUTH_TYPE: github-oidc
-      DATABRICKS_HOST: ${{ vars.DATABRICKS_HOST }}
-      DATABRICKS_CLIENT_ID: ${{ vars.DATABRICKS_CLIENT_ID }}
+      DATABRICKS_AUTH_TYPE: azure-client-secret
+      ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
+      ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
+      ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
 
     steps:
       - name: Check out repository
