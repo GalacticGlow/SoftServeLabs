@@ -92,3 +92,6 @@ jobs:
 
       - name: Deploy production bundle
         run: databricks bundle deploy -t prod
+
+      - name: Verify deployed job
+        run: databricks jobs list --output json
