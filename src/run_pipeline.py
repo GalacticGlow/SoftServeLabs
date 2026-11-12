@@ -2,8 +2,6 @@ import os
 import sys
 import logging
 from datetime import timedelta
-from databricks.sdk.service import compute
-
 from databricks.sdk import WorkspaceClient
 from databricks.sdk.service import jobs
 
@@ -21,45 +19,6 @@ logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s - %(levelname)s - %(message)s"
 )
-
-# Cluster config
-CLUSTER_NAME = "OpenFoodFacts Custom Compute"
-NODE_TYPE_ID = "Standard_DS3_v2"
-
-NUM_WORKERS = 1
-AUTOTERMINATION_MINUTES = 30
-
-def create_cluster():
-    client = WorkspaceClient()
-
-    logging.info("Selecting the latest Long-Term Support Databricks Runtime...")
-
-    spark_version = client.clusters.select_spark_version(
-        latest=True,
-        long_term_support=True
-    )
-
-    logging.info("Selected Spark version: %s", spark_version)
-    logging.info("Creating all-purpose compute: %s", CLUSTER_NAME)
-
-    cluster = client.clusters.create_and_wait(
-        cluster_name=CLUSTER_NAME,
-        spark_version=spark_version,
-        node_type_id=NODE_TYPE_ID,
-        num_workers=NUM_WORKERS,
-        autotermination_minutes=AUTOTERMINATION_MINUTES,
-        data_security_mode=compute.DataSecurityMode.DATA_SECURITY_MODE_STANDARD
-    )
-
-    cluster_url = (
-        f"{client.config.host}"
-        f"#setting/clusters/{cluster.cluster_id}/configuration"
-    )
-
-    logging.info("Cluster successfully created!")
-    logging.info("Cluster ID: %s", cluster.cluster_id)
-    logging.info("Cluster state: %s", cluster.state)
-    logging.info("Cluster URL: %s", cluster_url)
 
 def run_pipeline():
     client = WorkspaceClient()
@@ -98,7 +57,6 @@ def run_pipeline():
 
 if __name__ == "__main__":
     try:
-        #create_cluster() 
         run_pipeline()
     except Exception:
         logging.exception("Script failed")
