@@ -97,7 +97,7 @@ jobs:
         run: databricks jobs list --output json
 
       - name: Install automation dependencies
-        run: python -m pip install databricks-sdk
+        run: python -m pip install databricks-sdk PyYAML
 
       - name: Run ETL pipeline automation
         run: python src/run_pipeline.py

@@ -6,9 +6,10 @@ from databricks.sdk import WorkspaceClient
 from databricks.sdk.service import jobs
 
 from pathlib import Path
+import os
 import yaml
-
-CONFIG_PATH = "/Workspace/Users/art.gulidov@softserve.academy/Lab9/config/config.yml"
+PROJECT_ROOT = Path(os.getcwd()).resolve().parent
+CONFIG_PATH = PROJECT_ROOT / "config" / "config.yml"
 
 with open(CONFIG_PATH, "r") as f:
     config = yaml.safe_load(f)
