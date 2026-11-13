@@ -96,6 +96,13 @@ jobs:
       - name: Verify deployed job
         run: databricks jobs list --output json
 
+      - name: Set up Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: pyproject.toml
+
       - name: Install automation dependencies
         run: python -m pip install databricks-sdk PyYAML
 
