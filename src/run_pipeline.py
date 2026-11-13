@@ -8,7 +8,7 @@ from databricks.sdk.service import jobs
 from pathlib import Path
 import os
 import yaml
-PROJECT_ROOT = Path(os.getcwd()).resolve().parent
+PROJECT_ROOT = Path(os.getcwd()).resolve().parent.parent
 CONFIG_PATH = PROJECT_ROOT / "config" / "config.yml"
 
 with open(CONFIG_PATH, "r") as f:
