@@ -79,9 +79,11 @@ jobs:
 
     env:
       DATABRICKS_AUTH_TYPE: azure-client-secret
+      DATABRICKS_HOST: https://adb-7405604651938730.10.azuredatabricks.net
       ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
       ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
       ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
+      ARM_ENVIRONMENT: PUBLIC
 
     steps:
       - name: Check out repository
