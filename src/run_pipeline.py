@@ -10,19 +10,8 @@ import os
 import yaml
 SCRIPT_PATH = Path(__file__).resolve()
 
-print("SCRIPT PATH:", SCRIPT_PATH)
-print("SCRIPT DIRECTORY:", SCRIPT_PATH.parent)
-print("PARENT 1:", SCRIPT_PATH.parents[0])
-print("PARENT 2:", SCRIPT_PATH.parents[1])
-print("PARENT 3:", SCRIPT_PATH.parents[2])
-
 PROJECT_ROOT = SCRIPT_PATH.parents[1]
 CONFIG_PATH = PROJECT_ROOT / "config" / "config.yml"
-
-print("CONFIG PATH:", CONFIG_PATH)
-print("CONFIG EXISTS:", CONFIG_PATH.exists())
-
-print("ROOT CONTENTS:", list(PROJECT_ROOT.iterdir()))
 
 with open(CONFIG_PATH, "r") as f:
     config = yaml.safe_load(f)
