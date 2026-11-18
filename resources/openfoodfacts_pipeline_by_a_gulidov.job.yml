@@ -63,6 +63,7 @@ resources:
           disabled: false
           email_notifications: {}
           notebook_task:
+            notebook_path: ../notebooks/Bronze_current.ipynb
             source: WORKSPACE
           run_if: ALL_SUCCESS
           timeout_seconds: 0
