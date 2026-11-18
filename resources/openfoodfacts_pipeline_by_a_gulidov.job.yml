@@ -74,7 +74,7 @@ resources:
           webhook_notifications: {}
         - task_key: Silver
           depends_on:
-            - task_key: Bronze_current
+            - task_key: Bronze_CDC
           existing_cluster_id: 0924-102324-wnx9xwo2
           disabled: false
           email_notifications: {}
