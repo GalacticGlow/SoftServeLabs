@@ -6,7 +6,6 @@ PIPELINE:
 
 SOURCE:
   URL: https://static.openfoodfacts.org/data/en.openfoodfacts.org.products.csv.gz
-  VOLUME_PATH: /Volumes/dbr_dev_ua5816bd/gulidov_artem_staging/raw_csv/products_raw.csv.gz
 
 PERMISSIONS:
   PRINCIPAL: "account users"
