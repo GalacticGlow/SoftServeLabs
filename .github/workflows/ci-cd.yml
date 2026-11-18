@@ -2,10 +2,10 @@ name: OpenFoodFacts CI/CD
 
 on:
   pull_request:
-    branches: [Lab9]
+    branches: [Lab9, Lab10, Lab11, Lab12]
 
   push:
-    branches: [Lab9]
+    branches: [Lab9, Lab10, Lab11, Lab12]
 
   workflow_dispatch:
 
@@ -67,8 +67,7 @@ jobs:
 
     if: |
       (github.event_name == 'push' ||
-       github.event_name == 'workflow_dispatch') &&
-      github.ref == 'refs/heads/Lab9'
+       github.event_name == 'workflow_dispatch')
 
     runs-on: ubuntu-latest
     environment: prod

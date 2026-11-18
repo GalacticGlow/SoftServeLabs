@@ -113,7 +113,7 @@
         "\r\n",
         "FROM dbr_dev_ua5816bd.gulidov_artem_gold.fact_product_entries f\r\n",
         "\r\n",
-        "JOIN dbr_dev_ua5816bd.gulidov_artem_gold.dim_brands b\r\n",
+        "JOIN artem_gulidov_postgres_catalog.public.dim_brands b\r\n",
         "    ON f.brand_id = b.brand_id\r\n",
         "\r\n",
         "JOIN dbr_dev_ua5816bd.gulidov_artem_gold.dim_products p\r\n",

@@ -5,7 +5,7 @@ from pyspark.sql.window import Window
 def build_gold_tables(
     silver_df: DataFrame,
     fact_product_entries_cols: list[str],
-    dim_brands_cols: list[str],
+    #dim_brands_cols: list[str],
     dim_products_cols: list[str]
 ):
     df_main = silver_df.filter(F.col("is_current") == True)
@@ -21,7 +21,7 @@ def build_gold_tables(
     )
 
     fact_product_entries = df_main.select(*fact_product_entries_cols).distinct()
-    dim_brands = df_main.select(*dim_brands_cols).distinct()
+    #dim_brands = df_main.select(*dim_brands_cols).distinct()
     dim_products = df_main.select(*dim_products_cols).distinct()
 
     print("=== AFTER SELECT/DISTINCT ===")
@@ -41,15 +41,17 @@ def build_gold_tables(
         ).otherwise(0)
     )
 
+    """
     dim_brands = (
         dim_brands
         .withColumn("rn", F.row_number().over(window))
         .filter(F.col("rn") == 1)
         .drop("rn")
     )
+    """
 
     return {
         "fact_product_entries": fact_product_entries,
-        "dim_brands": dim_brands,
+        #"dim_brands": dim_brands,
         "dim_products": dim_products,
     }

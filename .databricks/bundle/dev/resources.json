@@ -1,0 +1,169 @@
+{
+ "state_version": 3,
+ "cli_version": "1.23.0",
+ "lineage": "1076106f-74ac-4d42-8bc6-53571435bc90",
+ "serial": 1,
+ "state": {
+  "resources.dashboards.openfoodfacts_dashboard": {
+   "__id__": "01f1daea63081f1cb6533e7795cba388",
+   "state": {
+    "display_name": "[dev art_gulidov] Lab 6 Gold",
+    "embed_credentials": false,
+    "etag": "537667451",
+    "parent_path": "/Workspace/Users/art.gulidov@softserve.academy/.bundle/openfoodfacts_pipeline/dev/resources",
+    "published": true,
+    "serialized_dashboard": "sha256:eea9e094405282a3b9476c573ddad1c991f1a2fb85e74fab4c16040a460d312a",
+    "warehouse_id": "abb8ea0ecf2e1a89"
+   }
+  },
+  "resources.jobs.openfoodfacts_pipeline_by_a_gulidov": {
+   "__id__": "1107138029119045",
+   "state": {
+    "deployment": {
+     "kind": "BUNDLE",
+     "metadata_file_path": "/Workspace/Users/art.gulidov@softserve.academy/.bundle/openfoodfacts_pipeline/dev/state/metadata.json"
+    },
+    "edit_mode": "UI_LOCKED",
+    "email_notifications": {
+     "no_alert_for_skipped_runs": true,
+     "on_failure": [
+      "art.gulidov@gmail.com"
+     ],
+     "on_success": [
+      "art.gulidov@gmail.com"
+     ]
+    },
+    "format": "MULTI_TASK",
+    "max_concurrent_runs": 1,
+    "name": "[dev art_gulidov] Prod OpenFoodFacts Pipeline",
+    "notification_settings": {
+     "no_alert_for_canceled_runs": true,
+     "no_alert_for_skipped_runs": true
+    },
+    "parameters": [
+     {
+      "default": "dbr_dev_ua5816bd",
+      "name": "catalog"
+     },
+     {
+      "default": "/Volumes/dbr_dev_ua5816bd/gulidov_artem_staging/raw_csv/products_raw.csv.gz",
+      "name": "staging_volume"
+     },
+     {
+      "default": "gulidov_artem_bronze",
+      "name": "bronze_schema"
+     },
+     {
+      "default": "gulidov_artem_silver",
+      "name": "silver_schema"
+     },
+     {
+      "default": "gulidov_artem_gold",
+      "name": "gold_schema"
+     }
+    ],
+    "performance_target": "PERFORMANCE_OPTIMIZED",
+    "queue": {
+     "enabled": true
+    },
+    "schedule": {
+     "pause_status": "PAUSED",
+     "quartz_cron_expression": "32 0 12 * * ?",
+     "timezone_id": "Europe/Kiev"
+    },
+    "tags": {
+     "dev": "art_gulidov"
+    },
+    "tasks": [
+     {
+      "depends_on": [
+       {
+        "task_key": "Staging"
+       }
+      ],
+      "disabled": false,
+      "email_notifications": {},
+      "existing_cluster_id": "0924-102324-wnx9xwo2",
+      "notebook_task": {
+       "notebook_path": "/Workspace/Users/art.gulidov@softserve.academy/Lab8/src/Bronze",
+       "source": "WORKSPACE"
+      },
+      "run_if": "ALL_SUCCESS",
+      "task_key": "Bronze",
+      "timeout_seconds": 0,
+      "webhook_notifications": {}
+     },
+     {
+      "depends_on": [
+       {
+        "task_key": "Silver"
+       }
+      ],
+      "disabled": false,
+      "email_notifications": {},
+      "existing_cluster_id": "0924-102324-wnx9xwo2",
+      "notebook_task": {
+       "notebook_path": "/Workspace/Users/art.gulidov@softserve.academy/Lab8/src/Gold",
+       "source": "WORKSPACE"
+      },
+      "run_if": "ALL_SUCCESS",
+      "task_key": "Gold",
+      "timeout_seconds": 0,
+      "webhook_notifications": {}
+     },
+     {
+      "disabled": false,
+      "email_notifications": {},
+      "existing_cluster_id": "0924-102324-wnx9xwo2",
+      "notebook_task": {
+       "notebook_path": "/Workspace/Users/art.gulidov@softserve.academy/Lab8/setup/setup",
+       "source": "WORKSPACE"
+      },
+      "run_if": "ALL_SUCCESS",
+      "task_key": "Setup",
+      "timeout_seconds": 0,
+      "webhook_notifications": {}
+     },
+     {
+      "depends_on": [
+       {
+        "task_key": "Bronze"
+       }
+      ],
+      "disabled": false,
+      "email_notifications": {},
+      "existing_cluster_id": "0924-102324-wnx9xwo2",
+      "notebook_task": {
+       "notebook_path": "/Workspace/Users/art.gulidov@softserve.academy/Lab8/src/Silver",
+       "source": "WORKSPACE"
+      },
+      "run_if": "ALL_SUCCESS",
+      "task_key": "Silver",
+      "timeout_seconds": 0,
+      "webhook_notifications": {}
+     },
+     {
+      "depends_on": [
+       {
+        "task_key": "Setup"
+       }
+      ],
+      "disabled": false,
+      "email_notifications": {},
+      "existing_cluster_id": "0924-102324-wnx9xwo2",
+      "notebook_task": {
+       "notebook_path": "/Workspace/Users/art.gulidov@softserve.academy/Lab8/src/Staging",
+       "source": "WORKSPACE"
+      },
+      "run_if": "ALL_SUCCESS",
+      "task_key": "Staging",
+      "timeout_seconds": 0,
+      "webhook_notifications": {}
+     }
+    ],
+    "timeout_seconds": 0,
+    "webhook_notifications": {}
+   }
+  }
+ }
+}

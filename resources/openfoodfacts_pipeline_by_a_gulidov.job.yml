@@ -43,7 +43,7 @@ resources:
           disabled: false
           email_notifications: {}
           notebook_task:
-            notebook_path: ../src/Staging.ipynb
+            notebook_path: ../notebooks/Staging.ipynb
             source: WORKSPACE
           run_if: ALL_SUCCESS
           timeout_seconds: 0
@@ -55,19 +55,31 @@ resources:
           disabled: false
           email_notifications: {}
           notebook_task:
-            notebook_path: ../src/Bronze.ipynb
+            notebook_path: ../notebooks/Bronze.ipynb
             source: WORKSPACE
           run_if: ALL_SUCCESS
           timeout_seconds: 0
           webhook_notifications: {}
-        - task_key: Silver
+        - task_key: Bronze_CDC
           depends_on:
             - task_key: Bronze
           existing_cluster_id: 0924-102324-wnx9xwo2
           disabled: false
           email_notifications: {}
           notebook_task:
-            notebook_path: ../src/Silver.ipynb
+            notebook_path: ../notebooks/Bronze_current.ipynb
+            source: WORKSPACE
+          run_if: ALL_SUCCESS
+          timeout_seconds: 0
+          webhook_notifications: {}
+        - task_key: Silver
+          depends_on:
+            - task_key: Bronze_current
+          existing_cluster_id: 0924-102324-wnx9xwo2
+          disabled: false
+          email_notifications: {}
+          notebook_task:
+            notebook_path: ../notebooks/Silver.ipynb
             source: WORKSPACE
           run_if: ALL_SUCCESS
           timeout_seconds: 0
@@ -79,7 +91,7 @@ resources:
           disabled: false
           email_notifications: {}
           notebook_task:
-            notebook_path: ../src/Gold.ipynb
+            notebook_path: ../notebooks/Gold.ipynb
             source: WORKSPACE
           run_if: ALL_SUCCESS
           timeout_seconds: 0
