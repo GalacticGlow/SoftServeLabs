@@ -92,7 +92,7 @@ jobs:
         uses: databricks/setup-cli@main
 
       - name: Deploy production bundle
-        run: databricks bundle deploy -t prod
+        run: databricks bundle deploy -t prod --force
 
       - name: Verify deployed job
         run: databricks jobs list --output json
