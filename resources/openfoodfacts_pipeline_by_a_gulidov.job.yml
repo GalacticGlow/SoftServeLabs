@@ -27,6 +27,7 @@ resources:
 
       tasks:
         - task_key: Setup
+          existing_cluster_id: 0924-102324-wnx9xwo2
           disabled: false
           email_notifications: {}
           notebook_task:
@@ -38,6 +39,7 @@ resources:
         - task_key: Staging
           depends_on:
             - task_key: Setup
+          existing_cluster_id: 0924-102324-wnx9xwo2
           disabled: false
           email_notifications: {}
           notebook_task:
@@ -49,6 +51,7 @@ resources:
         - task_key: Bronze
           depends_on:
             - task_key: Staging
+          existing_cluster_id: 0924-102324-wnx9xwo2
           disabled: false
           email_notifications: {}
           notebook_task:
@@ -60,6 +63,7 @@ resources:
         - task_key: Bronze_CDC
           depends_on:
             - task_key: Bronze
+          existing_cluster_id: 0924-102324-wnx9xwo2
           disabled: false
           email_notifications: {}
           notebook_task:
@@ -71,6 +75,7 @@ resources:
         - task_key: Silver
           depends_on:
             - task_key: Bronze_CDC
+          existing_cluster_id: 0924-102324-wnx9xwo2
           disabled: false
           email_notifications: {}
           notebook_task:
@@ -82,6 +87,7 @@ resources:
         - task_key: Gold
           depends_on:
             - task_key: Silver
+          existing_cluster_id: 0924-102324-wnx9xwo2
           disabled: false
           email_notifications: {}
           notebook_task:
