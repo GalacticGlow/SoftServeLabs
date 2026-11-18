@@ -1,102 +1,18 @@
-# OpenFoodFacts Pipeline — CI/CD: DEV → PROD Promotion
+## Incremental Data Processing with Change Data Feed
 
-The OpenFoodFacts Data Engineering project uses **Databricks Asset Bundles (DAB)** to manage DEV and PROD deployments from a single codebase. GitHub Actions handles automated testing, bundle validation, and production deployment.
+Implemented an incremental processing workflow using **Delta Lake Change Data Feed (CDF)** to avoid repeatedly processing the entire OpenFoodFacts dataset.
 
-The pipeline follows a medallion architecture (Bronze → Silver → Gold), processing OpenFoodFacts product snapshots and maintaining historical product records.
+- **Bronze Current State:** Created a table maintaining the latest version of each product, using Delta MERGE operations against incoming snapshots.
+- **Change Data Feed:** Enabled CDF on the current-state table to capture inserts, updates, and deletes.
+- **Incremental Silver Processing:** Modified the Silver pipeline to consume CDF events, apply data cleaning and transformations, and maintain historical product records using SCD Type 2.
+- **Checkpoint Management:** Implemented a Delta checkpoint table to track the last successfully processed Bronze version, allowing Silver processing to resume from the correct point during subsequent executions.
+- **Job Orchestration:** Integrated the new processing steps into the Databricks Asset Bundle job, establishing dependencies between Bronze ingestion, Bronze CDC processing, and Silver transformations.
 
-## Environments
+## Lakehouse Federation with Supabase PostgreSQL
 
-Both targets use the same Databricks workspace and Unity Catalog catalog, with environment isolation provided by separate schemas, bundle targets, and deployment paths.
+Implemented **Databricks Lakehouse Federation** to integrate externally stored PostgreSQL data into the analytics layer.
 
-| | **`dev`** | **`prod`** |
-|---|---|---|
-| Bundle mode | `development` | `production` |
-| Workspace | Azure Databricks workspace | Same workspace |
-| Catalog | `dbr_dev_ua5816bd` | `dbr_dev_ua5816bd` |
-| Staging schema |`gulidov_artem_staging`|`prod_gulidov_artem_staging`|
-| Bronze schema | `gulidov_artem_bronze` | `prod_gulidov_artem_bronze` |
-| Silver schema | `gulidov_artem_silver` | `prod_gulidov_artem_silver` |
-| Gold schema | `gulidov_artem_gold` | `prod_gulidov_artem_gold` |
-| Landing volume | `raw_csv` | `raw_csv` |
-| Job execution identity | Deploying user | Configured service principal |
-
-All environment-specific values are defined as variables in `databricks.yml` and overridden by the corresponding target. The notebooks and transformations use these values through configuration and job parameters instead of hardcoding environment-specific catalog or schema names.
-
-## Project structure
-
-| **Path** | **Content** |
-|---|---|
-| `databricks.yml` | Main Asset Bundle configuration: variables, DEV/PROD targets, workspace settings, and deployment configuration. |
-| `resources/` | Databricks resource definitions, including the OpenFoodFacts pipeline job. |
-| `resources/openfoodfacts_job.yml` | Main ETL job configuration and task dependencies. |
-| `src/` | Pipeline implementation: Bronze ingestion, Silver transformations, Gold transformations, and supporting code/notebooks. |
-| `tests/` | Pytest unit tests for pipeline transformation logic. |
-| `.github/workflows/` | GitHub Actions workflows for automated testing, validation, and deployment. |
-
-## CI/CD workflow
-
-The project uses GitHub Actions to automate validation and production deployment. The `Lab8` branch is used as the integration and deployment branch.
-
-```text
-Pull request to Lab8
-        │
-        ▼
-  GitHub Actions
-        │
-        ├── Run unit tests (pytest)
-        │
-        └── Validate PROD bundle
-                  │
-                  ▼
-             Merge to Lab8
-                  │
-                  ▼
-          Push / workflow dispatch
-                  │
-                  ▼
-          Deploy PROD bundle
-                  │
-                  ▼
-       Update Databricks resources
-```
-
-- **Unit tests:** Run automatically using pytest. They verify the correctness of the pipeline's transformation logic.
-- **Bundle validation:** Executes `databricks bundle validate -t prod` to check the production bundle configuration.
-- **Production deployment:** After a push to `Lab8` (or a manual workflow dispatch from that branch), GitHub Actions deploys the production bundle using `databricks bundle deploy -t prod`.
-- **Authentication:** The deployment workflow authenticates using Azure service principal credentials stored as GitHub Environment secrets (`ARM_TENANT_ID`, `ARM_CLIENT_ID`, and `ARM_CLIENT_SECRET`). The production deployment uses the `prod` GitHub Environment.
-- **Deployment concurrency:** A GitHub Actions concurrency group prevents simultaneous production deployments.
-
-The deployment process updates Databricks resources and bundle files; it does **not** automatically execute the ETL job. The job can be started separately through Databricks Workflows, its configured schedule, or `databricks bundle run`.
-
-## Deployment management
-
-The project uses Databricks Asset Bundles to keep resource configuration version-controlled and reproducible.
-
-Useful commands:
-
-```bash
-# Validate the DEV bundle
-databricks bundle validate -t dev
-
-# Validate the PROD bundle
-databricks bundle validate -t prod
-
-# Deploy DEV resources
-databricks bundle deploy -t dev
-
-# Deploy PROD resources
-databricks bundle deploy -t prod
-
-# Run the PROD ETL job
-databricks bundle run openfoodfacts_pipeline_by_a_gulidov -t prod
-```
-
-The production job is named **`Prod OpenFoodFacts Pipeline`**. Its daily schedule is configured for 12:32 (`Europe/Kiev`), but the schedule is currently paused.
-
-Bundle deployments are designed to be repeatable: running `bundle deploy` again without configuration changes should not recreate or duplicate existing resources.
-
-## Managed infrastructure and resources
-
-The bundle manages the production ETL job, its configuration, deployment files, and associated permissions.
-
-The Unity Catalog catalog, schemas, and staging volumes are provisioned separately rather than recreated on every bundle deployment. This avoids conflicts with existing resources and keeps infrastructure provisioning separate from regular pipeline deployments.
+- Migrated the `dim_brands` dimension table from the Databricks Lakehouse to a **Supabase PostgreSQL** instance.
+- Configured a PostgreSQL connection and a foreign catalog in Databricks to access the external database.
+- Used federated queries to combine the externally stored brand dimension with locally stored Gold tables.
+- Integrated these joins into a Databricks SQL dashboard query, allowing dashboard visualizations to use data from both the Databricks Lakehouse and Supabase.
