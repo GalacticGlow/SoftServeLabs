@@ -1,6 +1,6 @@
 PIPELINE:
   NAME: openfoodfacts
-  JOB_ID: 865160677633324
+  JOB_ID: 248828032497030
   DQ_PATH: /Workspace/Users/art.gulidov@softserve.academy/Lab10/notebooks/dq_tests.ipynb
   CLUSTER_ID: 0924-102324-wnx9xwo2
 
