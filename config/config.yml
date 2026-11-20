@@ -1,12 +1,12 @@
 PIPELINE:
   NAME: openfoodfacts
-  JOB_ID: 865160677633324
-  DQ_PATH: /Workspace/Users/art.gulidov@softserve.academy/Lab9/notebooks/dq_tests.ipynb
+  JOB_ID: 248828032497030
+  DQ_PATH: /Workspace/Users/art.gulidov@softserve.academy/Lab10/notebooks/dq_tests.ipynb
   CLUSTER_ID: 0924-102324-wnx9xwo2
 
 SOURCE:
   URL: https://static.openfoodfacts.org/data/en.openfoodfacts.org.products.csv.gz
-  VOLUME_PATH: /Volumes/dbr_dev_ua5816bd/gulidov_artem_staging/raw_csv/products_raw.csv.gz
+  STREAM_URL: https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_hour.geojson
 
 PERMISSIONS:
   PRINCIPAL: "account users"
@@ -15,8 +15,13 @@ PERMISSIONS:
 
 TABLES:
   BRONZE: products_bronze
+  BRONZE_CURRENT: products_bronze_current
+
+  ZEROBUS_STAGING: earthquakes_zerobus_staging
+  ZEROBUS_BRONZE: earthquakes_zerobus_bronze
 
   SILVER: products_silver
+  CDF_CHECKPOINT: cdf_checkpoint
 
   QUARANTINE:
     RECONCILIATION: reconciliation_quarantine

@@ -29,6 +29,12 @@ variables:
   service_principal_name:
     default: d1a2118a-1d70-44cf-ba58-ea3454da6727
 
+  workspace:
+    description: Workspace url
+
+  zerobus_endpoint:
+    description: Zerobus endpoint
+
 targets:
   dev:
     mode: development
@@ -44,6 +50,8 @@ targets:
       bronze_schema: gulidov_artem_bronze
       silver_schema: gulidov_artem_silver
       gold_schema: gulidov_artem_gold
+      workspace: https://adb-7405604651938730.10.azuredatabricks.net/
+      zerobus_endpoint: https://7405604651938730.zerobus.eastus.azuredatabricks.net
 
   prod:
     mode: production
@@ -69,3 +77,5 @@ targets:
       bronze_schema: prod_gulidov_artem_bronze
       silver_schema: prod_gulidov_artem_silver
       gold_schema: prod_gulidov_artem_gold
+      workspace: https://adb-7405604651938730.10.azuredatabricks.net/
+      zerobus_endpoint: https://7405604651938730.zerobus.eastus.azuredatabricks.net
