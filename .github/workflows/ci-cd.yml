@@ -2,10 +2,10 @@ name: OpenFoodFacts CI/CD
 
 on:
   pull_request:
-    branches: [Lab11]
+    branches: [Lab12B]
 
   push:
-    branches: [Lab11]
+    branches: [Lab12B]
 
   workflow_dispatch:
 
