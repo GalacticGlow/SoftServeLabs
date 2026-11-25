@@ -1,11 +1,12 @@
 from pyspark.sql.types import StringType, StructField, StructType
 from pathlib import Path
+from uuid import uuid4
 import sys
 
 SRC_PATH = str(Path.cwd().parent / "src")
 sys.path.insert(0, SRC_PATH)
 
-from silver import build_scd2_column_list, prepare_silver_dataframe
+from silver import apply_scd_type_2, build_scd2_column_list, prepare_silver_dataframe
 
 def test_build_scd2_column_list_applies_renames(spark):
     columns = ["code", "owner", "product_quantity", "product_name"]
@@ -23,6 +24,80 @@ def test_build_scd2_column_list_applies_renames(spark):
         "product_weight",
         "product_name",
     ]
+
+def test_apply_scd_type_2_tracks_initial_unchanged_changed_and_new_rows(spark):
+    target_table = f"scd2_unit_test_{uuid4().hex}"
+    columns_to_keep = ["code", "product_name"]
+    rename_map = {"code": "product_id"}
+
+    initial_source = spark.createDataFrame(
+        [("p1", "Apple"), ("p2", "Pear")],
+        ["product_id", "product_name"],
+    )
+
+    try:
+        apply_scd_type_2(
+            spark=spark,
+            source_df=initial_source,
+            target_table_path=target_table,
+            business_key="product_id",
+            columns_to_keep=columns_to_keep,
+            rename_map=rename_map,
+        )
+
+        initial_rows = spark.table(target_table).collect()
+        assert len(initial_rows) == 2
+        assert all(row["is_current"] for row in initial_rows)
+        assert all(row["valid_from"] is not None for row in initial_rows)
+        assert all(row["valid_to"] is None for row in initial_rows)
+
+        apply_scd_type_2(
+            spark=spark,
+            source_df=initial_source,
+            target_table_path=target_table,
+            business_key="product_id",
+            columns_to_keep=columns_to_keep,
+            rename_map=rename_map,
+        )
+        assert spark.table(target_table).count() == 2
+
+        changed_source = spark.createDataFrame(
+            [("p1", "Green Apple"), ("p3", "Plum")],
+            ["product_id", "product_name"],
+        )
+        apply_scd_type_2(
+            spark=spark,
+            source_df=changed_source,
+            target_table_path=target_table,
+            business_key="product_id",
+            columns_to_keep=columns_to_keep,
+            rename_map=rename_map,
+        )
+
+        rows = spark.table(target_table).collect()
+        assert len(rows) == 4
+
+        p1_rows = [row for row in rows if row["product_id"] == "p1"]
+        assert len(p1_rows) == 2
+        p1_old = next(row for row in p1_rows if row["product_name"] == "Apple")
+        p1_current = next(
+            row for row in p1_rows if row["product_name"] == "Green Apple"
+        )
+        assert not p1_old["is_current"]
+        assert p1_old["valid_to"] is not None
+        assert p1_current["is_current"]
+        assert p1_current["valid_to"] is None
+        assert p1_old["_hash"] != p1_current["_hash"]
+
+        p2 = next(row for row in rows if row["product_id"] == "p2")
+        p3 = next(row for row in rows if row["product_id"] == "p3")
+        assert p2["is_current"]
+        assert p3["is_current"]
+        assert p3["valid_to"] is None
+        assert sum(row["is_current"] for row in rows) == 3
+    finally:
+        if spark.catalog.tableExists(target_table):
+            spark.sql(f"DROP TABLE `{target_table}`")
 
 def test_prepare_silver_dataframe_deduplicates_and_cleans_values(spark):
     COLUMNS_TO_KEEP = [

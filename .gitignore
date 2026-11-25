@@ -1,3 +1,7 @@
 pycache/
 *.pyc
 *.egg-info/
+.agents/
+.ai-dev-kit/
+.codex/
+.idea/
