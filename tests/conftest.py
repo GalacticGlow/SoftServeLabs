@@ -1,17 +1,24 @@
-import os
-import sys
-
-os.environ["PYSPARK_PYTHON"] = sys.executable
-os.environ["PYSPARK_DRIVER_PYTHON"] = sys.executable
-
 import pytest
 from pyspark.sql import SparkSession
+from delta import configure_spark_with_delta_pip
 
 @pytest.fixture(scope="session")
 def spark():
-    session = SparkSession.getActiveSession()
+    builder = (
+        SparkSession.builder
+        .master("local[2]")
+        .appName("pytest")
+        .config(
+            "spark.sql.extensions",
+            "io.delta.sql.DeltaSparkSessionExtension",
+        )
+        .config(
+            "spark.sql.catalog.spark_catalog",
+            "org.apache.spark.sql.delta.catalog.DeltaCatalog",
+        )
+    )
 
-    if session is None:
-        session = SparkSession.builder.getOrCreate()
+    spark = configure_spark_with_delta_pip(builder).getOrCreate()
 
-    yield session
+    yield spark
+    spark.stop()
