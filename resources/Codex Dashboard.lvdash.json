@@ -1,0 +1,496 @@
+{
+  "datasets": [
+    {
+      "name": "product_count",
+      "displayName": "Product count",
+      "queryLines": [
+        "SELECT COUNT(*) AS product_count FROM dim_products\n"
+      ],
+      "catalog": "dbr_dev_ua5816bd",
+      "schema": "gulidov_artem_gold"
+    },
+    {
+      "name": "brand_count",
+      "displayName": "Brand count",
+      "queryLines": [
+        "SELECT COUNT(*) AS brand_count FROM dim_brands\n"
+      ],
+      "catalog": "dbr_dev_ua5816bd",
+      "schema": "gulidov_artem_gold"
+    },
+    {
+      "name": "nova_mix",
+      "displayName": "Product mix by NOVA group",
+      "queryLines": [
+        "SELECT CASE WHEN nova_group BETWEEN 1 AND 4 THEN CAST(nova_group AS STRING) ELSE 'Unclassified' END AS nova_group, COUNT(*) AS product_count FROM dim_products GROUP BY 1 ORDER BY product_count DESC\n"
+      ],
+      "catalog": "dbr_dev_ua5816bd",
+      "schema": "gulidov_artem_gold"
+    },
+    {
+      "name": "top_brands",
+      "displayName": "Top brands by products",
+      "queryLines": [
+        "SELECT b.brands_list, COUNT(DISTINCT f.product_id) AS product_count FROM fact_product_entries f JOIN dim_brands b ON f.brand_id = b.brand_id WHERE b.brands_list IS NOT NULL AND TRIM(b.brands_list) <> '' AND b.brands_list <> 'N/A' GROUP BY b.brands_list ORDER BY product_count DESC LIMIT 12\n"
+      ],
+      "catalog": "dbr_dev_ua5816bd",
+      "schema": "gulidov_artem_gold"
+    },
+    {
+      "name": "country_coverage",
+      "displayName": "Products by country",
+      "queryLines": [
+        "SELECT country, COUNT(DISTINCT product_id) AS product_count FROM dim_products LATERAL VIEW EXPLODE(SPLIT(countries, ',')) country_rows AS country WHERE country IS NOT NULL AND TRIM(country) <> '' AND country <> 'N/A' GROUP BY country ORDER BY product_count DESC LIMIT 12\n"
+      ],
+      "catalog": "dbr_dev_ua5816bd",
+      "schema": "gulidov_artem_gold"
+    },
+    {
+      "name": "sugar_by_category",
+      "displayName": "Average sugar by food category",
+      "queryLines": [
+        "SELECT pnns_groups_2 AS product_category, AVG(sugars_100g) AS avg_sugar_g, COUNT(*) AS product_count FROM dim_products WHERE pnns_groups_2 IS NOT NULL AND pnns_groups_2 <> 'N/A' AND sugars_100g IS NOT NULL GROUP BY pnns_groups_2 ORDER BY product_count DESC LIMIT 12\n"
+      ],
+      "catalog": "dbr_dev_ua5816bd",
+      "schema": "gulidov_artem_gold"
+    },
+    {
+      "name": "completeness_bands",
+      "displayName": "Product data completeness",
+      "queryLines": [
+        "SELECT CASE WHEN try_cast(regexp_replace(product_data_completeness, '%', '') AS DOUBLE) >= 80 THEN '80-100%' WHEN try_cast(regexp_replace(product_data_completeness, '%', '') AS DOUBLE) >= 60 THEN '60-79%' WHEN try_cast(regexp_replace(product_data_completeness, '%', '') AS DOUBLE) >= 40 THEN '40-59%' WHEN try_cast(regexp_replace(product_data_completeness, '%', '') AS DOUBLE) >= 20 THEN '20-39%' ELSE '0-19%' END AS completeness_band, COUNT(*) AS product_count FROM fact_product_entries GROUP BY 1 ORDER BY MIN(COALESCE(try_cast(regexp_replace(product_data_completeness, '%', '') AS DOUBLE), 0))\n"
+      ],
+      "catalog": "dbr_dev_ua5816bd",
+      "schema": "gulidov_artem_gold"
+    }
+  ],
+  "pages": [
+    {
+      "name": "overview",
+      "displayName": "Overview",
+      "layout": [
+        {
+          "widget": {
+            "name": "total-products",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "product_count",
+                  "fields": [
+                    {
+                      "name": "product_count",
+                      "expression": "`product_count`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "product_count",
+                  "displayName": "Current products",
+                  "format": {
+                    "type": "number",
+                    "abbreviation": "compact",
+                    "decimalPlaces": {
+                      "type": "max",
+                      "places": 1
+                    }
+                  }
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Current products"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 3,
+            "height": 3
+          }
+        },
+        {
+          "widget": {
+            "name": "total-brands",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "brand_count",
+                  "fields": [
+                    {
+                      "name": "brand_count",
+                      "expression": "`brand_count`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "brand_count",
+                  "displayName": "Distinct brands",
+                  "format": {
+                    "type": "number",
+                    "abbreviation": "compact",
+                    "decimalPlaces": {
+                      "type": "max",
+                      "places": 1
+                    }
+                  }
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Distinct brands"
+              }
+            }
+          },
+          "position": {
+            "x": 3,
+            "y": 0,
+            "width": 3,
+            "height": 3
+          }
+        },
+        {
+          "widget": {
+            "name": "nova-groups",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "nova_mix",
+                  "fields": [
+                    {
+                      "name": "nova_group",
+                      "expression": "`nova_group`"
+                    },
+                    {
+                      "name": "product_count",
+                      "expression": "`product_count`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "nova_group",
+                  "displayName": "NOVA group",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                },
+                "y": {
+                  "fieldName": "product_count",
+                  "displayName": "Products",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Products by NOVA group",
+                "showDescription": true,
+                "description": "Unclassified values are grouped together."
+              }
+            }
+          },
+          "position": {
+            "x": 6,
+            "y": 0,
+            "width": 6,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "leading-brands",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "top_brands",
+                  "fields": [
+                    {
+                      "name": "brands_list",
+                      "expression": "`brands_list`"
+                    },
+                    {
+                      "name": "product_count",
+                      "expression": "`product_count`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "product_count",
+                  "displayName": "Products",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                },
+                "y": {
+                  "fieldName": "brands_list",
+                  "displayName": "Brand",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Top brands by product count",
+                "showDescription": true,
+                "description": "Excludes missing brand labels."
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 3,
+            "width": 6,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "country-coverage",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "country_coverage",
+                  "fields": [
+                    {
+                      "name": "country",
+                      "expression": "`country`"
+                    },
+                    {
+                      "name": "product_count",
+                      "expression": "`product_count`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "product_count",
+                  "displayName": "Products",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                },
+                "y": {
+                  "fieldName": "country",
+                  "displayName": "Country",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Product coverage by country",
+                "showDescription": true,
+                "description": "Products may be associated with multiple countries; missing values are excluded."
+              }
+            }
+          },
+          "position": {
+            "x": 6,
+            "y": 6,
+            "width": 6,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "sugar-by-category",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "sugar_by_category",
+                  "fields": [
+                    {
+                      "name": "product_category",
+                      "expression": "`product_category`"
+                    },
+                    {
+                      "name": "avg_sugar_g",
+                      "expression": "`avg_sugar_g`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "avg_sugar_g",
+                  "displayName": "Average sugar (g/100g)",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                },
+                "y": {
+                  "fieldName": "product_category",
+                  "displayName": "Food category",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Average sugar by food category",
+                "showDescription": true,
+                "description": "Top categories by product count."
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 9,
+            "width": 6,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "completeness-distribution",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "completeness_bands",
+                  "fields": [
+                    {
+                      "name": "product_count",
+                      "expression": "`product_count`"
+                    },
+                    {
+                      "name": "completeness_band",
+                      "expression": "`completeness_band`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "showDescription": true,
+                "title": {
+                  "value": "Product data completeness",
+                  "fields": []
+                },
+                "description": {
+                  "value": "Completeness bands parsed from the Gold fact table.",
+                  "fields": []
+                }
+              },
+              "version": 3,
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "product_count",
+                  "displayName": "Products",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                },
+                "y": {
+                  "fieldName": "completeness_band",
+                  "displayName": "Completeness",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 6,
+            "y": 12,
+            "width": 6,
+            "height": 6
+          }
+        }
+      ],
+      "pageType": "PAGE_TYPE_CANVAS",
+      "layoutVersion": "GRID_V1"
+    }
+  ],
+  "uiSettings": {
+    "theme": {
+      "canvasBackgroundColor": {
+        "light": "#F6F8FB",
+        "dark": "#17212B"
+      },
+      "widgetBackgroundColor": {
+        "light": "#FFFFFF",
+        "dark": "#202C38"
+      },
+      "widgetBorderColor": {
+        "light": "#FFFFFF",
+        "dark": "#202C38"
+      },
+      "fontColor": {
+        "light": "#17212B",
+        "dark": "#EDF2F7"
+      },
+      "selectionColor": {
+        "light": "#2B7A78",
+        "dark": "#70D6C6"
+      },
+      "visualizationColors": [
+        "#2B7A78",
+        "#F4A261",
+        "#E76F51",
+        "#457B9D",
+        "#8D6A9F",
+        "#6A994E",
+        "#E9C46A"
+      ],
+      "widgetHeaderAlignment": "LEFT"
+    }
+  }
+}
