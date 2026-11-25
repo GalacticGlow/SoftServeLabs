@@ -1,0 +1,34 @@
+
+[mcp_servers.databricks]
+command = "C:/PyCharm Python BS/AIDevKit/ai-dev-kit/.venv/Scripts/python.exe"
+args = ["C:/PyCharm Python BS/AIDevKit/ai-dev-kit/databricks-mcp-server/run_server.py"]
+
+[mcp_servers.databricks.env]
+DATABRICKS_CONFIG_PROFILE = "dbr_dev"
+
+[mcp_servers.databricks.tools.manage_vs_index]
+approval_mode = "approve"
+
+[mcp_servers.databricks.tools.manage_warehouse]
+approval_mode = "approve"
+
+[mcp_servers.databricks.tools.manage_jobs]
+approval_mode = "approve"
+
+[mcp_servers.databricks.tools.manage_uc_objects]
+approval_mode = "approve"
+
+[mcp_servers.databricks.tools.get_current_user]
+approval_mode = "approve"
+
+[mcp_servers.databricks.tools.manage_vs_endpoint]
+approval_mode = "approve"
+
+[mcp_servers.databricks.tools.get_table_stats_and_schema]
+approval_mode = "approve"
+
+[mcp_servers.databricks.tools.manage_pipeline]
+approval_mode = "approve"
+
+[mcp_servers.databricks.tools.manage_dashboard]
+approval_mode = "approve"
